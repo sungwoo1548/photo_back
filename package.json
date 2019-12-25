@@ -1,0 +1,11 @@
+{
+  "name": "back",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "sungwoo1548 <swo1548@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mysql": "^2.17.1"
+  }
+}
