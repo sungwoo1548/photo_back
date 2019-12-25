@@ -4,8 +4,18 @@
   "main": "index.js",
   "author": "sungwoo1548 <swo1548@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": "10.15.3",
+    "yarn": "1.17.3"
+  },
   "dependencies": {
     "express": "^4.17.1",
     "mysql": "^2.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
   }
 }
