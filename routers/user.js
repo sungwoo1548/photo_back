@@ -16,7 +16,7 @@ router.post("/join", (req, res) => {
                     if (err) throw err;
 
                     // 등록 시 인덱스용 파일 생성
-                    fs.writeFile(`user_dir_info/${name}.json`,JSON.stringify([]) ,(err) => {
+                    fs.writeFile(`user_dir_info/${name}.json`, JSON.stringify([]), (err) => {
                         if (err) throw err;
                     });
 
@@ -65,11 +65,37 @@ router.post("/mkdir", (req, res) => {
         if (err) throw err;
 
         const pre_data = JSON.parse(data);
-        const new_data = [...pre_data, { [folderName]: [] }]; // 추후 중복방지 필요
+        const new_data = { folderName: folderName } // 추후 중복방지 필요
+        pre_data.push(new_data);
+
+        fs.writeFile(`user_dir_info/${name}.json`, JSON.stringify(pre_data), (err) => {
+            if (err) throw err;
+            res.json({ msg: "새로운 폴더 생성됨" });
+        })
+    });
+
+});
+
+/**
+ * 이미지 저장 기능
+ * 이미지 URL을 해당 folder 배열 아래에 추가하여 인덱싱용 파일을 업데이트함.
+ * imgArray 는 imgURL과 tag배열을 포함한다.
+ */
+
+router.post("/saveimg", (req, res) => {
+    const { name, folderName, imgArray } = req.body;
+
+    fs.readFile(`user_dir_info/${name}.json`, async (err, data) => {
+        if (err) throw err;
+
+        const pre_data = JSON.parse(data);
+        const folderIndex = await pre_data.findIndex(el => el.folderName == folderName);
+
+        const new_data = { ...pre_data[folderIndex], imgURLs: imgArray }
 
         fs.writeFile(`user_dir_info/${name}.json`, JSON.stringify(new_data), (err) => {
             if (err) throw err;
-            res.json({ msg: "새로운 폴더 생성됨" });
+            res.json({ msg: "내용 업데이트 됨" });
         })
     });
 
