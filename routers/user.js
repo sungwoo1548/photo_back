@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const fs = require("fs");
 
 const { dbPool, dbconfig } = require("../dbPool");
 // 신규 유저 등록
@@ -13,6 +14,11 @@ router.post("/join", (req, res) => {
                 connection.query(`INSERT INTO user (name) VALUES ('${name}')`, (err, insert_result) => {
                     connection.release();
                     if (err) throw err;
+
+                    // 등록 시 인덱스용 파일 생성
+                    fs.writeFile(`user_dir_info/${name}.json`,JSON.stringify([]) ,(err) => {
+                        if (err) throw err;
+                    });
 
                     res.json(insert_result);
                 });
@@ -45,5 +51,29 @@ router.post("/login", (req, res) => {
     });
 
 });
+
+/**
+ * 폴더 생성 기능
+ * 파일서버는 다른곳에 있음
+ * 해당 유저의 이름과 폴더명이 맵핑되는 인덱싱용 json형식의 파일 생성
+ */
+
+router.post("/mkdir", (req, res) => {
+    const { name, folderName } = req.body;
+
+    fs.readFile(`user_dir_info/${name}.json`, (err, data) => {
+        if (err) throw err;
+
+        const pre_data = JSON.parse(data);
+        const new_data = [...pre_data, { [folderName]: [] }]; // 추후 중복방지 필요
+
+        fs.writeFile(`user_dir_info/${name}.json`, JSON.stringify(new_data), (err) => {
+            if (err) throw err;
+            res.json({ msg: "새로운 폴더 생성됨" });
+        })
+    });
+
+});
+
 
 module.exports = router;
