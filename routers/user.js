@@ -124,5 +124,32 @@ router.post("/getdir", (req, res) => {
     });
 });
 
+/**
+ * 특정 폴더에서 이미지 조회 기능
+ * 최근 저장한 순서대로 조회된다.
+ */
+
+router.post("/getimg", (req, res) => {
+    const { name, folderName } = req.body;
+
+    fs.readFile(`user_dir_info/${name}.json`, async (err, data) => { // 유저의 인덱싱용 파일을 읽어온다.
+        if (err) throw err;
+
+        const user_data = JSON.parse(data);
+
+        const folderData = await user_data.find(el => el.folderName == folderName);
+
+        const imgURL_recent = [];
+
+        await folderData.imgURLs.map(el => {
+            imgURL_recent.push(Object.keys(el));
+        })
+
+        imgURL_recent.reverse(); // 최신순
+
+        res.json(imgURL_recent);
+    });
+});
+
 
 module.exports = router;
