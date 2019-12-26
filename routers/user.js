@@ -92,13 +92,36 @@ router.post("/saveimg", (req, res) => {
         const folderIndex = await pre_data.findIndex(el => el.folderName == folderName);
 
         const new_data = { ...pre_data[folderIndex], imgURLs: imgArray }
+        pre_data[folderIndex] = new_data;
 
-        fs.writeFile(`user_dir_info/${name}.json`, JSON.stringify(new_data), (err) => {
+        fs.writeFile(`user_dir_info/${name}.json`, JSON.stringify(pre_data), (err) => {
             if (err) throw err;
             res.json({ msg: "내용 업데이트 됨" });
         })
     });
 
+});
+
+
+/**
+ * 폴더 조회 기능
+ * 생성한 순서대로 조회하고, 저장된 이미지 개수를 파악한다.
+ */
+
+router.post("/getdir", (req, res) => {
+    const { name } = req.body;
+
+    fs.readFile(`user_dir_info/${name}.json`, async (err, data) => { // 유저의 인덱싱용 파일을 읽어온다.
+        if (err) throw err;
+
+        const user_data = JSON.parse(data);
+
+        const folderList = []; // [{ 폴더명 : 사진수 }]
+        await user_data.map(el => {
+            folderList.push({ folderName: el.folderName, imgNum: el.imgURLs.length });
+        });
+        res.json(folderList);
+    });
 });
 
 
