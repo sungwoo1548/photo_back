@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const { dbPool, dbconfig } = require("../dbPool");
-
+console.log(dbconfig);
 // 신규 유저 등록
 router.post("/join", (req, res) => {
     const { name } = req.body;
