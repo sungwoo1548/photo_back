@@ -5,7 +5,7 @@
   "author": "sungwoo1548 <swo1548@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "node index.js"
+    "start": "nodemon index.js"
   },
   "engines": {
     "node": "10.15.3",
