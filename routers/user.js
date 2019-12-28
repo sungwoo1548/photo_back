@@ -105,7 +105,7 @@ router.post("/saveimg", (req, res) => {
         const usablePoint = all_point - all_spent_point;
         console.log(usablePoint); // 디버그용
 
-        if (usablePoint < 100) { // 이미지 등록 1개당 100포인트
+        if (usablePoint < 100 * imgArray.length) { // 이미지 등록 1개당 100포인트
             res.json({ msg: "포인트 부족", result: false });
 
         } else { // 포인트가 있는 경우
@@ -114,15 +114,57 @@ router.post("/saveimg", (req, res) => {
 
             const folderIndex = await pre_data.findIndex(el => el.folderName == folderName);
             console.log(pre_data[folderIndex]); // 디버그용
+
             if (pre_data[folderIndex].imgURLs) { // 추가 등록
                 pre_data[folderIndex].imgURLs.push(...imgArray);
 
-                pre_data[pointListIndex].spent_point += 100 * imgArray.length; // 포인트 사용 적용
+                // 포인트 사용 적용
+                // 인출 대상 폴더의 남은 포인트 만큼 채운 후 몫,나머지 이용해서 계산
+                const costPoint = 100 * imgArray.length;
+                const cur_folderBudget = pre_data[pointListIndex].point - pre_data[pointListIndex].spent_point;
+
+                const costRemain = costPoint - cur_folderBudget;
+                console.log(costRemain);
+
+                if (costRemain <= 0) {
+                    pre_data[pointListIndex].spent_point += costPoint;
+                } else {
+                    pre_data[pointListIndex].spent_point = 1000;
+                    
+                    const quotient = Math.floor(costRemain / 1000);
+                    const remainder = costRemain % 1000;
+
+                    for (i = 0; i < quotient; i++) {
+                        pre_data[pointListIndex + i + 1].spent_point = 1000;
+                    }
+                    pre_data[pointListIndex + quotient + 1].spent_point = remainder;
+
+                }
             } else { // 신규 등록
                 const new_data = { ...pre_data[folderIndex], imgURLs: imgArray }
                 pre_data[folderIndex] = new_data;
 
-                pre_data[pointListIndex].spent_point += 100 * imgArray.length; // 포인트 사용 적용
+                // 포인트 사용 적용
+                // 인출 대상 폴더의 남은 포인트 만큼 채운 후 몫,나머지 이용해서 계산
+                const costPoint = 100 * imgArray.length;
+                const cur_folderBudget = pre_data[pointListIndex].point - pre_data[pointListIndex].spent_point;
+
+                const costRemain = costPoint - cur_folderBudget;
+
+                if (costRemain <= 0) {
+                    pre_data[pointListIndex].spent_point += costPoint;
+                } else {
+                    pre_data[pointListIndex].spent_point = 1000;
+
+                    const quotient = Math.floor(costRemain / 1000);
+                    const remainder = costRemain % 1000;
+
+                    for (i = 0; i < quotient; i++) {
+                        pre_data[pointListIndex + i + 1].spent_point = 1000;
+                    }
+                    pre_data[pointListIndex + quotient + 1].spent_point = remainder;
+
+                }
             }
 
             fs.writeFile(`user_dir_info/${name}.json`, JSON.stringify(pre_data), (err) => {
