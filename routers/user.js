@@ -135,6 +135,21 @@ router.post("/saveimg", (req, res) => {
 
 });
 
+/**
+ * 포인트 미사용 폴더 조회
+ */
+router.post("/unspentdir", (req, res) => {
+    const { name } = req.body;
+
+    fs.readFile(`user_dir_info/${name}.json`, async (err, data) => {
+        if (err) throw err;
+
+        const userData = JSON.parse(data);
+        const unspentPointFolder = userData.filter(el => el.spent_point == 0);
+        res.json(unspentPointFolder);
+    });
+});
+
 
 /**
  * 폴더 조회 기능
