@@ -56,6 +56,7 @@ router.post("/login", (req, res) => {
  * 폴더 생성 기능
  * 파일서버는 다른곳에 있음
  * 해당 유저의 이름과 폴더명이 맵핑되는 인덱싱용 json형식의 파일 생성
+ * ++ 기능 추가 : 포인트 기능
  */
 
 router.post("/mkdir", (req, res) => {
@@ -65,13 +66,19 @@ router.post("/mkdir", (req, res) => {
         if (err) throw err;
 
         const pre_data = JSON.parse(data);
-        const new_data = { folderName: folderName } // 추후 중복방지 필요
-        pre_data.push(new_data);
+        const duplicate = pre_data.findIndex(el => el.folderName == folderName);
+        if (duplicate == -1) { // 폴더명 중복 방지
+            const new_data = { folderName: folderName, point: 1000, spent_point: 0 }; // 포인트 지급
+            pre_data.push(new_data);
 
-        fs.writeFile(`user_dir_info/${name}.json`, JSON.stringify(pre_data), (err) => {
-            if (err) throw err;
-            res.json({ msg: "새로운 폴더 생성됨" });
-        })
+            fs.writeFile(`user_dir_info/${name}.json`, JSON.stringify(pre_data), (err) => {
+                if (err) throw err;
+                res.json({ msg: "새로운 폴더 생성됨" });
+            })
+        } else {
+            res.json({ msg: "같은 이름의 폴더가 있습니다.", result: false });
+        }
+
     });
 
 });
@@ -199,10 +206,10 @@ router.get("/top10", (req, res) => {
     // res.json(tagSortedList);  // 전체 반환 후 client에서 top10 처리
 
     // top10 만 반환
-    if(tagSortedList.length < 10){
-        res.json(tagSortedList); 
-    }else{
-        res.json(tagSortedList.slice(0,10));
+    if (tagSortedList.length < 10) {
+        res.json(tagSortedList);
+    } else {
+        res.json(tagSortedList.slice(0, 10));
     }
 });
 
