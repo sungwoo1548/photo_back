@@ -1,1 +1,51 @@
-[{"folderName":"myfolder001","imgURLs":[{"imgURL001":["tag1","tag2","tag3"]},{"imgURL002":["tag11","tag22"]}]}]
+[
+    {
+        "folderName": "myfolder001",
+        "imgURLs": [
+            {
+                "imgURL001": [
+                    "tag1",
+                    "tag2",
+                    "tag3"
+                ]
+            },
+            {
+                "imgURL002": [
+                    "tag11",
+                    "tag22"
+                ]
+            }
+        ]
+    },
+    {
+        "folderName": "myfolder002",
+        "imgURLs": [
+            {
+                "imgURL021": [
+                    "tag1",
+                    "tag2",
+                    "tag3"
+                ]
+            },
+            {
+                "imgURL022": [
+                    "tag11",
+                    "tag22"
+                ]
+            },
+            {
+                "imgURL023": [
+                    "tag1",
+                    "tag2",
+                    "tag3"
+                ]
+            },
+            {
+                "imgURL024": [
+                    "tag11",
+                    "tag22"
+                ]
+            }
+        ]
+    }
+]
