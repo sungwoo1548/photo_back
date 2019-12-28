@@ -96,19 +96,41 @@ router.post("/saveimg", (req, res) => {
         if (err) throw err;
 
         const pre_data = JSON.parse(data);
-        const folderIndex = await pre_data.findIndex(el => el.folderName == folderName);
-        console.log(pre_data[folderIndex]);
-        if (pre_data[folderIndex].imgURLs) {
-            pre_data[folderIndex].imgURLs.push(...imgArray);
-        } else {
-            const new_data = { ...pre_data[folderIndex], imgURLs: imgArray }
-            pre_data[folderIndex] = new_data;
-        }
 
-        fs.writeFile(`user_dir_info/${name}.json`, JSON.stringify(pre_data), (err) => {
-            if (err) throw err;
-            res.json({ msg: "내용 업데이트 됨" });
-        })
+        const pointList = [];
+        pre_data.map(el => pointList.push({ point: el.point, spent_point: el.spent_point }));
+
+        const all_point = pointList.map(el => el.point).reduce((acc, cur) => acc + cur);
+        const all_spent_point = pointList.map(el => el.spent_point).reduce((acc, cur) => acc + cur);
+        const usablePoint = all_point - all_spent_point;
+        console.log(usablePoint); // 디버그용
+
+        if (usablePoint < 100) { // 이미지 등록 1개당 100포인트
+            res.json({ msg: "포인트 부족", result: false });
+
+        } else { // 포인트가 있는 경우
+            const pointListIndex = Math.floor(all_spent_point / 1000); // 선입선출용 index 구하기
+            console.log(pointListIndex);
+
+            const folderIndex = await pre_data.findIndex(el => el.folderName == folderName);
+            console.log(pre_data[folderIndex]); // 디버그용
+            if (pre_data[folderIndex].imgURLs) { // 추가 등록
+                pre_data[folderIndex].imgURLs.push(...imgArray);
+
+                pre_data[pointListIndex].spent_point += 100 * imgArray.length; // 포인트 사용 적용
+            } else { // 신규 등록
+                const new_data = { ...pre_data[folderIndex], imgURLs: imgArray }
+                pre_data[folderIndex] = new_data;
+
+                pre_data[pointListIndex].spent_point += 100 * imgArray.length; // 포인트 사용 적용
+            }
+
+            fs.writeFile(`user_dir_info/${name}.json`, JSON.stringify(pre_data), (err) => {
+                if (err) throw err;
+                res.json({ msg: "내용 업데이트 됨" });
+            });
+        };
+
     });
 
 });
