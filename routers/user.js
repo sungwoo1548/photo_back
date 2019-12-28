@@ -155,5 +155,55 @@ router.post("/getimg", (req, res) => {
     });
 });
 
+/**
+ * 태그 서비스 
+ * 이미지 등록시 api /user/saveimg 에서 사용되는 파라미터 imgArray 는 imgURLs:[{imgURL1:["tag",""...]},{imgURL2:["tag",""...]}...]형식으로 구성됨
+ * top10 서비스 기능 구현
+ * 각 유저의 인덱싱파일을 읽어 전체 사진에 대해 태그순으로 정렬
+ */
+
+router.get("/top10", (req, res) => {
+    const tagSortedList = [];
+    const fileList = fs.readdirSync(`user_dir_info/`);
+
+    fileList.map(fileName => {
+        const userFolder = fs.readFileSync(`user_dir_info/${fileName}`);
+        const folderList = JSON.parse(userFolder);
+
+        folderList.map(folder => {
+
+            for (i = 0; i < folder.imgURLs.length; i++) {
+                const imgURL = (Object.keys(folder.imgURLs[i]))[0]
+                tagSortedList.push({
+                    name: fileName.split(".")[0],
+                    folderName: folder.folderName,
+                    imgURL,
+                    tagNum: folder.imgURLs[i][imgURL].length,
+                });
+            }
+        })
+    });
+
+    // tagNum 순으로 내림차순 정렬
+    tagSortedList.sort(function (a, b) {
+        if (a.tagNum > b.tagNum) {
+            return -1;
+        }
+        if (a.tagNum < b.tagNum) {
+            return 1;
+        }
+        return 0;
+    });
+    // console.log(tagSortedList);  // 디버그용
+
+    // res.json(tagSortedList);  // 전체 반환 후 client에서 top10 처리
+
+    // top10 만 반환
+    if(tagSortedList.length < 10){
+        res.json(tagSortedList); 
+    }else{
+        res.json(tagSortedList.slice(0,10));
+    }
+});
 
 module.exports = router;
