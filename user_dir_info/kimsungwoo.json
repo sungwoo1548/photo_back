@@ -1,0 +1,111 @@
+[
+    {
+        "folderName": "myfolder001",
+        "point": 1000,
+        "spent_point": 1000,
+        "imgURLs": [
+            {
+                "http://imgURL002": [
+                    "tag1",
+                    "tag2",
+                    "tag3",
+                    "tag4",
+                    "tag5"
+                ]
+            },
+            {
+                "http://imgURL003": [
+                    "tag1",
+                    "tag2",
+                    "tag3"
+                ]
+            },
+            {
+                "http://imgURL004": [
+                    "tag1",
+                    "tag2",
+                    "tag3",
+                    "tag4",
+                    "tag5",
+                    "tag6"
+                ]
+            },
+            {
+                "http://imgURL005": [
+                    "tag1",
+                    "tag2"
+                ]
+            },
+            {
+                "http://imgURL006": [
+                    "tag1",
+                    "tag2",
+                    "tag3",
+                    "tag4"
+                ]
+            },
+            {
+                "http://imgURL007": [
+                    "tag1",
+                    "tag2",
+                    "tag3",
+                    "tag4",
+                    "tag5"
+                ]
+            },
+            {
+                "http://imgURL008": [
+                    "tag1",
+                    "tag2",
+                    "tag3",
+                    "tag4",
+                    "tag5",
+                    "tag6",
+                    "tag7",
+                    "tag8"
+                ]
+            },
+            {
+                "http://imgURL009": [
+                    "tag1",
+                    "tag2",
+                    "tag3"
+                ]
+            },
+            {
+                "http://imgURL010": [
+                    "tag1",
+                    "tag2",
+                    "tag3",
+                    "tag4",
+                    "tag5",
+                    "tag6",
+                    "tag7"
+                ]
+            },
+            {
+                "http://imgURL011": [
+                    "tag1",
+                    "tag2",
+                    "tag3",
+                    "tag4"
+                ]
+            }
+        ]
+    },
+    {
+        "folderName": "myfolder002",
+        "point": 1000,
+        "spent_point": 100,
+        "imgURLs": [
+            {
+                "http://imgURL001": [
+                    "tag1",
+                    "tag2",
+                    "tag3",
+                    "tag4"
+                ]
+            }
+        ]
+    }
+]
