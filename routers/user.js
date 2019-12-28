@@ -90,9 +90,13 @@ router.post("/saveimg", (req, res) => {
 
         const pre_data = JSON.parse(data);
         const folderIndex = await pre_data.findIndex(el => el.folderName == folderName);
-
-        const new_data = { ...pre_data[folderIndex], imgURLs: imgArray }
-        pre_data[folderIndex] = new_data;
+        console.log(pre_data[folderIndex]);
+        if (pre_data[folderIndex].imgURLs) {
+            pre_data[folderIndex].imgURLs.push(...imgArray);
+        } else {
+            const new_data = { ...pre_data[folderIndex], imgURLs: imgArray }
+            pre_data[folderIndex] = new_data;
+        }
 
         fs.writeFile(`user_dir_info/${name}.json`, JSON.stringify(pre_data), (err) => {
             if (err) throw err;
